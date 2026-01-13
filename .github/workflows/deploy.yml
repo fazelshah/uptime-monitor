@@ -1,0 +1,55 @@
+name: Deploy Uptime Monitor
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      # Checkout code
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Setup Node.js
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # Install dependencies
+      - name: Install backend deps
+        working-directory: backend
+        run: npm install
+
+      # Build TypeScript
+      - name: Build backend
+        working-directory: backend
+        run: npm run build
+
+      # Zip Lambda
+      - name: Package Lambda
+        run: |
+          cd backend/dist
+          zip -r ../../lambda.zip .
+
+      # Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # Terraform Init
+      - name: Terraform Init
+        working-directory: infra/terraform
+        run: terraform init
+
+      # Terraform Apply
+      - name: Terraform Apply
+        working-directory: infra/terraform
+        run: terraform apply -auto-approve
