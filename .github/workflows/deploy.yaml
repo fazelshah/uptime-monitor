@@ -1,0 +1,61 @@
+name: Deploy Uptime Monitor
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # 3️⃣ Install backend dependencies
+      - name: Install backend dependencies
+        working-directory: backend
+        run: |
+          npm install
+
+      # 4️⃣ Build TypeScript
+      - name: Build backend
+        working-directory: backend
+        run: |
+          npm run build
+
+      # 5️⃣ Zip Lambda package
+      - name: Create Lambda zip
+        run: |
+          cd backend
+          zip -r ../lambda.zip dist node_modules
+
+      # 6️⃣ Configure AWS credentials (STATIC KEYS)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # 7️⃣ Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # 8️⃣ Terraform Init
+      - name: Terraform Init
+        working-directory: infra/terraform
+        run: terraform init
+
+      # 9️⃣ Terraform Apply
+      - name: Terraform Apply
+        working-directory: infra/terraform
+        run: terraform apply -auto-approve
