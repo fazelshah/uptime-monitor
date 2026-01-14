@@ -1,0 +1,16 @@
+# Node
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Build output
+dist/
+.lambda/
+lambda.zip
+
+# Env files
+.env
+.env.*
+
+# OS
+.DS_Store
