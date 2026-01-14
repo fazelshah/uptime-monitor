@@ -1,18 +1,12 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendAlert = sendAlert;
-const aws_sdk_1 = __importDefault(require("aws-sdk"));
-const sns = new aws_sdk_1.default.SNS();
-async function sendAlert(message) {
-    if (!process.env.SNS_TOPIC_ARN)
-        return;
-    await sns
-        .publish({
-        TopicArn: process.env.SNS_TOPIC_ARN,
-        Message: message
-    })
-        .promise();
-}
+exports.pool = void 0;
+const pg_1 = require("pg");
+exports.pool = new pg_1.Pool({
+    host: process.env.DB_HOST,
+    database: process.env.DB_NAME,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    port: 5432,
+    ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false
+});
