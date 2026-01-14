@@ -1,12 +1,14 @@
-import { Pool } from "pg";
+import AWS from "aws-sdk";
 
-export const pool = new Pool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: 5432,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
+const sns = new AWS.SNS();
+
+export async function sendAlert(message: string) {
+  if (!process.env.SNS_TOPIC_ARN) return;
+
+  await sns
+    .publish({
+      TopicArn: process.env.SNS_TOPIC_ARN,
+      Message: message
+    })
+    .promise();
+}
