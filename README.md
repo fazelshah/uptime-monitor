@@ -22,5 +22,5 @@ EventBridge → Lambda → HTTP Checks → RDS → SNS Alerts
 ### Deployment
 Infrastructure is managed using Terraform.
 
-## License
+### License
 MIT
