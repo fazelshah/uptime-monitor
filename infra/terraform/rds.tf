@@ -1,7 +1,6 @@
 resource "aws_db_instance" "uptime_db" {
   identifier             = "uptime-db"
   engine                 = "postgres"
-  engine_version         = "15.3"
   instance_class         = "db.t3.micro"
   allocated_storage      = 20
 
