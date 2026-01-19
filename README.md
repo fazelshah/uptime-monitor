@@ -19,7 +19,7 @@ EventBridge → Lambda → HTTP Checks → RDS → SNS Alerts
 - AWS RDS (PostgreSQL)
 - AWS SNS
 
-## Deployment
+### Deployment
 Infrastructure is managed using Terraform.
 
 ## License
