@@ -1,6 +1,6 @@
 resource "aws_lambda_function" "uptime_checker" {
   function_name = "uptime-checker"
-  runtime       = "nodejs18.x"
+  runtime       = "nodejs20.x"
   handler       = "handler.handler"
   role          = aws_iam_role.lambda_role.arn
 
